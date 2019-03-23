@@ -1,0 +1,24 @@
+Não estou muito certo quanto a numeração das tarefas que fiz, e se estão batendo com
+os números no enunciado. Portanto, deixo aqui a descrição do que fiz com o nome de cada diretório.
+
+event_driven - arquivos que implementam a API event_driven, de acordo com formato apresentado
+	em sala. O app.ino implementado é um exemplo e imprime infos na tela quando botões são apertados.
+
+ex1 - Só um exemplo, não faz parte da entrega. 
+	Piscar a cada segundo, e parar com o LED aceso se o usuário pressionar o botão
+
+ex2 - Só um exemplo, não faz parte da entrega. 
+	Faz o mesmo que ex1, mas usando a função millis() pra não ter bloqueio
+
+HelloWorld_eventDriven - reimplementa o ex1, usando a API event_driven.
+
+tarefa1 - implementa o seguinte behaviour:
+		piscar o LED a cada 1 segundo
+		botão1: acelerar o pisca-pisca a cada pressionada
+		botão2: desacelerar a cada pressionada
+		botão 1+2 em menos de 500 ms: parar de piscar
+
+tarefa1_event_driven - reimplementa a tarefa1 usando a API event_driven
+
+
+	

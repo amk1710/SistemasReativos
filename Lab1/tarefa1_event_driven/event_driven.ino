@@ -23,10 +23,10 @@ void button_listen(int pin)
       break;
     case A2:
       callbackButtons[1] = pin;
-	  break;
+      break;
     case A3:
       callbackButtons[2] = pin;
-	  break;
+      break;
   }
   
 }

@@ -28,8 +28,8 @@ bool LED_State = true;
 //começamos com delay de 1 segundo
 int LED_delay = 1000;
 
-unsigned int last_pressed1 = 0;
-unsigned int last_pressed2 = 1000;
+int last_pressed1 = 0;
+int last_pressed2 = 1000;
 
 void loop() {
   // put your main code here, to run repeatedly:
@@ -47,16 +47,22 @@ void loop() {
   //se botão 1 pressionado agora e não foi pressionado nos últimos 500ms
   if(!but1 && last_pressed1 + 200 < now)
   {
+    if(last_pressed1 + 200 < now)
+    {
+      //acelera pisca-pisca
+      LED_delay = max(LED_delay - 100, 100); 
+    }
     last_pressed1 = now;
-    //acelera pisca-pisca
-    LED_delay = max(LED_delay - 100, 100);
   }
 
   if(!but2 && last_pressed2 + 200 < now)
   {
+    if(last_pressed2 + 200 < now)
+    {
+      //acelera pisca-pisca
+      LED_delay = LED_delay + 100; 
+    }
     last_pressed2 = now;
-    //desacelera pisca-pisca
-    LED_delay = LED_delay + 100;
   }
 
   //se botões 1 e 2 foram apertados com menos de 500ms de intervalo,
