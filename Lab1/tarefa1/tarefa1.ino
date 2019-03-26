@@ -44,12 +44,14 @@ void loop() {
   int but1 = digitalRead(A1);
   int but2 = digitalRead(A2);
 
+
   //se botão 1 pressionado agora e não foi pressionado nos últimos 500ms
   if(!but1 && last_pressed1 + 200 < now)
   {
     last_pressed1 = now;
     //acelera pisca-pisca
     LED_delay = max(LED_delay - 100, 100);
+    
   }
 
   if(!but2 && last_pressed2 + 200 < now)
