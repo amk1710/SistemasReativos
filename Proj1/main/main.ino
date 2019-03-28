@@ -1,4 +1,5 @@
 #include "pindefs.h"
+#include "state_manager.h"
 
 int buttonStates[3];
 int lastButtonStates[3] = {HIGH, HIGH, HIGH};
@@ -7,6 +8,8 @@ int lastButtonReadings[3] = {HIGH, HIGH, HIGH};
 
 unsigned long lastDebounceTimes[3] = {0, 0, 0};
 unsigned long debounceDelay = 50;
+
+unsigned int lastPressTime = 0;
 
 void setup() {
   // put your setup code here, to run once:
@@ -55,19 +58,26 @@ void loop() {
   if(buttonStates[0] == LOW && buttonStates[2] == LOW
     && (buttonStates[0] != lastButtonStates[0] || buttonStates[2] != lastButtonStates[2])){
     Serial.println("Chaves 1 e 3");
+    set_state(0);
+    lastPressTime = now;
   }
   else if(buttonStates[2] == LOW && buttonStates[2] != lastButtonStates[2]){
     Serial.println("Chave 3");
+    next_state();
+    lastPressTime = now;
   }
   else if(buttonStates[1] == LOW && buttonStates[1] != lastButtonStates[1]){
     Serial.println("Chave 2");
+    lastPressTime = now;
   }
   else if(buttonStates[0] == LOW && buttonStates[0] != lastButtonStates[0]){
     Serial.println("Chave 1");
+    lastPressTime = now;
   }
-  else // No buttons pressed
+  else if(now - lastPressTime > 10000) // No buttons pressed
   {
-    // Create logic for 10 seconds without pressing buttons
+    Serial.println("Não apertou");
+    lastPressTime = now;
   }
   
   for(i = 0; i < 3; i++)
