@@ -1,2 +1,2 @@
-void set_state(int state);
+void reset_state();
 void next_state();

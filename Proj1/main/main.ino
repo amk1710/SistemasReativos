@@ -1,6 +1,9 @@
 #include "pindefs.h"
 #include "state_manager.h"
 
+int timerDelay = 60000;
+unsigned int timerStart = 0;
+
 int buttonStates[3];
 int lastButtonStates[3] = {HIGH, HIGH, HIGH};
 int lastButtonReadings[3] = {HIGH, HIGH, HIGH};
@@ -10,6 +13,11 @@ unsigned long lastDebounceTimes[3] = {0, 0, 0};
 unsigned long debounceDelay = 50;
 
 unsigned int lastPressTime = 0;
+
+void timer_set(int ms){
+  timerDelay = ms;
+  timerStart = millis();
+}
 
 void setup() {
   // put your setup code here, to run once:
@@ -23,12 +31,18 @@ void setup() {
   //pinMode(BUZZ, OUTPUT);
 
   Serial.begin(9600);
+
+  timer_init();
 }
 
 void loop() {
   // put your main code here, to run repeatedly:
 
   unsigned int now = millis();
+
+  if(now - timerStart >= timerDelay){
+    timer_expired();
+  }
 
   // Detecting buttons pressed
   int buttonReadings[3] = 
