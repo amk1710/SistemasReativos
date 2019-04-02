@@ -32,6 +32,7 @@ void setup() {
 
   Serial.begin(9600);
 
+  state_manager_init();
   timer_init();
 }
 
@@ -93,7 +94,7 @@ void loop() {
   else if(now - lastPressTime > 10000) // No buttons pressed
   {
     Serial.println("Não apertou");
-    set_state(0);
+    reset_state();
     lastPressTime = now;
   }
   
