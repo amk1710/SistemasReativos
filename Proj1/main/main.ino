@@ -103,5 +103,7 @@ void loop() {
     lastButtonReadings[i] = buttonReadings[i];
     lastButtonStates[i] = buttonStates[i];
   }
+
+  write_display(now);
   
 }

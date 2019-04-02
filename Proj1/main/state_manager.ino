@@ -1,23 +1,15 @@
 #include "pindefs.h"
 #include "time_manager.h"
-#include "SevSeg.h"
 
 #define NUM_STATES 7
-
+#define BLINK_INTERVAL 750
 
 int currentState = 0;
 
-//SevSeg sevseg;
+unsigned int lastDisplayBlink = 0;
+bool blinkState = false;
 
 void state_manager_init() {
-//  byte numDigits = 4;
-//  byte digitPins[] = {};
-//  byte segmentPins[] = {6, 5, 2, 3, 4, 7, 8, 9};
-//  bool resistorsOnSegments = true;
-//
-//  byte hardwareConfig = COMMON_ANODE;
-//  sevseg.begin(hardwareConfig, numDigits, digitPins, segmentPins, resistorsOnSegments);
-//  sevseg.setBrightness(90);
 }
 
 void reset_state(){
@@ -77,6 +69,60 @@ void set_leds(int state){
       break;
     case 6:
       digitalWrite(LED4, LOW);
+      break;
+  }
+}
+
+void write_display(unsigned int now){
+  switch(currentState){
+    case 0:
+      write_time();
+      break;
+    case 1:
+      write_time();
+      break;
+    case 2:
+      write_alarm();
+      break;
+    case 3:
+      if(now - lastDisplayBlink > BLINK_INTERVAL){
+        blinkState = !blinkState;
+        lastDisplayBlink = now;
+      }
+      if(blinkState){
+        write_time_hours();
+      }
+      write_time_minutes();
+      break;
+    case 4:
+      if(now - lastDisplayBlink > BLINK_INTERVAL){
+        blinkState = !blinkState;
+        lastDisplayBlink = now;
+      }
+      if(blinkState){
+        write_time_minutes();
+      }
+      write_time_hours();
+      break;
+    case 5:
+      if(now - lastDisplayBlink > BLINK_INTERVAL){
+        blinkState = !blinkState;
+        lastDisplayBlink = now;
+      }
+      if(blinkState){
+        write_alarm_hours();
+      }
+      write_alarm_minutes();
+      break;
+    case 6:
+      if(now - lastDisplayBlink > BLINK_INTERVAL){
+        blinkState = !blinkState;
+        lastDisplayBlink = now;
+      }
+      if(blinkState){
+        write_alarm_minutes();
+      }
+      write_alarm_hours();
       break;
   }
 }
