@@ -8,3 +8,5 @@ void write_time_hours();
 void write_time_minutes();
 void write_alarm_hours();
 void write_alarm_minutes();
+void ring_alarm();
+void alarm_expired(unsigned int now);

@@ -4,6 +4,10 @@
 int timerDelay = 60000;
 unsigned int timerStart = 0;
 
+bool alarmOn = false;
+int alarmDelay = 0;
+unsigned int alarmStart = 0;
+
 int buttonStates[3];
 int lastButtonStates[3] = {HIGH, HIGH, HIGH};
 int lastButtonReadings[3] = {HIGH, HIGH, HIGH};
@@ -19,6 +23,12 @@ void timer_set(int ms){
   timerStart = millis();
 }
 
+void alarm_set(int ms){
+  alarmDelay = ms;
+  alarmStart = millis();
+  alarmOn = true;
+}
+
 void setup() {
   // put your setup code here, to run once:
   pinMode(KEY1, INPUT_PULLUP);
@@ -28,7 +38,8 @@ void setup() {
   pinMode(LED2, OUTPUT);
   pinMode(LED3, OUTPUT);
   pinMode(LED4, OUTPUT);
-  //pinMode(BUZZ, OUTPUT);
+  pinMode(BUZZ, OUTPUT);
+  digitalWrite(BUZZ, HIGH);
 
   Serial.begin(9600);
 
@@ -43,6 +54,11 @@ void loop() {
 
   if(now - timerStart >= timerDelay){
     timer_expired();
+  }
+
+  if(alarmOn && now - alarmStart >= alarmDelay){
+    alarmOn = false;
+    alarm_expired(now);
   }
 
   // Detecting buttons pressed

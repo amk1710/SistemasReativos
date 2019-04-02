@@ -1,11 +1,14 @@
 #include "pindefs.h"
 #include "main.h"
+#include "state_manager.h"
 
 #define MOD(X,Y) ((X % Y) + Y) % Y
 
 #define LATCH_DIO 4
 #define CLK_DIO 7
 #define DATA_DIO 8
+
+#define MINUTE 60000
 
 /* Segment byte maps for numbers 0 to 9 */
 const byte SEGMENT_MAP[] = {0xC0, 0xF9, 0xA4, 0xB0, 0x99, 0x92, 0x82, 0xF8, 0X80, 0X90};
@@ -14,11 +17,14 @@ const byte SEGMENT_SELECT[] = {0xF1, 0xF2, 0xF4, 0xF8};
 
 int minutes = 0;
 int hours = 0;
-int alarm_min = 0;
+int alarm_min = 1;
 int alarm_h = 0;
 
+unsigned int alarm_start = 0;
+int alarmState = HIGH;
+
 void timer_init() {
-  timer_set(6000);
+  timer_set(MINUTE);
   pinMode(LATCH_DIO, OUTPUT);
   pinMode(CLK_DIO, OUTPUT);
   pinMode(DATA_DIO, OUTPUT);
@@ -33,7 +39,32 @@ void timer_expired() {
       hours = 0;
     }
   }
-  timer_set(6000);
+  timer_set(MINUTE);
+  Serial.print(hours);
+  Serial.print(":");
+  Serial.println(minutes);
+  Serial.print(alarm_h);
+  Serial.print(":");
+  Serial.println(alarm_min);
+  if(hours == alarm_h && minutes == alarm_min){
+    Serial.println(get_state());
+    if(get_state() == 1){
+      alarm_start = millis();
+      alarm_set(250);
+    }
+  }
+}
+
+void alarm_expired(unsigned int now){
+  if(now < alarm_start + 10000){
+    alarmState = !alarmState;
+    digitalWrite(BUZZ, alarmState);
+    alarm_set(250);
+  }
+  else{
+    digitalWrite(BUZZ, HIGH);
+    alarmState = HIGH;
+  }
 }
 
 void change_minutes(bool up, bool alarm) {

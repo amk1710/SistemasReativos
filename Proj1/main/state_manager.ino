@@ -9,6 +9,10 @@ int currentState = 0;
 unsigned int lastDisplayBlink = 0;
 bool blinkState = false;
 
+int get_state(){
+  return currentState;
+}
+
 void state_manager_init() {
 }
 
