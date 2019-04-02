@@ -13,15 +13,18 @@ void next_state(){
   Serial.println(currentState);
 }
 
-void button_changed(int pin, int v){
-  switch(pin){
-    case KEY1:
-      
-      break;
-    case KEY2:
-      break;
-    case KEY3:
-      break;
+void change_time(bool up){
+  if(currentState == 3){  // Time set hours
+    change_hours(up, false);
+  }
+  else if(currentState == 4){ // Time set minutes
+    change_minutes(up, false);
+  }
+  else if(currentState == 5){ // Alarm set hours
+    change_hours(up, true);
+  }
+  else if(currentState == 6){ // Alarm set minutes
+    change_minutes(up, true);
   }
 }
 

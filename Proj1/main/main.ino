@@ -82,15 +82,18 @@ void loop() {
   }
   else if(buttonStates[1] == LOW && buttonStates[1] != lastButtonStates[1]){
     Serial.println("Chave 2");
+    change_time(true);
     lastPressTime = now;
   }
   else if(buttonStates[0] == LOW && buttonStates[0] != lastButtonStates[0]){
     Serial.println("Chave 1");
+    change_time(false);
     lastPressTime = now;
   }
   else if(now - lastPressTime > 10000) // No buttons pressed
   {
     Serial.println("Não apertou");
+    set_state(0);
     lastPressTime = now;
   }
   
