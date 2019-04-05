@@ -18,6 +18,13 @@ unsigned long debounceDelay = 50;
 
 unsigned int lastPressTime = 0;
 
+bool permitLongPress[3] = {false, true, false};
+
+//usada para limitar click continuo nas chaves a intervalos específicos
+#define PRESS_REFRESH 160
+int pressTime[3] = {0, 0, 0};
+
+
 void timer_set(int ms){
   timerDelay = ms;
   timerStart = millis();
@@ -51,6 +58,7 @@ void loop() {
   // put your main code here, to run repeatedly:
 
   unsigned int now = millis();
+  bool dontBlink = false;
 
   if(now - timerStart >= timerDelay){
     timer_expired();
@@ -79,11 +87,16 @@ void loop() {
     }
     
     if((now - lastDebounceTimes[i]) > debounceDelay){
+      
+      //caso mudar de botão
       if(buttonReadings[i] != buttonStates[i]){
         buttonStates[i] = buttonReadings[i];
       }
     }
   }
+
+
+  //permite 
 
   // Buttons logic
   if(buttonStates[0] == LOW && buttonStates[2] == LOW
@@ -97,15 +110,20 @@ void loop() {
     next_state();
     lastPressTime = now;
   }
-  else if(buttonStates[1] == LOW && buttonStates[1] != lastButtonStates[1]){
+  //para o botão 2: levanta e exigência de o botão estar anteriormente em HIGH, mas limita a interação a tantas por intervalo de tempo
+  //o resultado disso é permitir pressionar o botão para circular as horas, porém numa velocidade controlada pelo valor PRESS_REFRESH
+  else if(buttonStates[1] == LOW && (now - lastPressTime) > PRESS_REFRESH){
     Serial.println("Chave 2");
     change_time(true);
     lastPressTime = now;
+    dontBlink = true;
   }
-  else if(buttonStates[0] == LOW && buttonStates[0] != lastButtonStates[0]){
+  //para o botão 1: levanta e exigência de o botão estar anteriormente em HIGH, mas limita a interação a tantas por intervalo de tempo
+  else if(buttonStates[0] == LOW && (now - lastPressTime) > PRESS_REFRESH){
     Serial.println("Chave 1");
     change_time(false);
     lastPressTime = now;
+    dontBlink = true;
   }
   else if(now - lastPressTime > 10000) // No buttons pressed
   {
@@ -120,6 +138,6 @@ void loop() {
     lastButtonStates[i] = buttonStates[i];
   }
 
-  write_display(now);
+  write_display(now, dontBlink);
   
 }

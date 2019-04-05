@@ -77,7 +77,20 @@ void set_leds(int state){
   }
 }
 
-void write_display(unsigned int now){
+//now é o now obtido pela função millis no main loop, dontBlink é usado para especificar explicitamente que o curso não pode piscar agora 
+//(é usado para facilitar a visualização do horário quando se está circulando com o botão pressionado)
+
+//função engarregada por escrever a informação correta no display, a cada loop
+void write_display(unsigned int now, bool dontBlink){
+
+  //uma gambiarra inteligente: se estão me pedindo para não piscar agora nesse loop,
+  if(dontBlink)
+  {
+    //eu adio a piscada, setando o blinkState para não piscar e o lastDisplayBlink para como se eu tivesse acabado de piscar
+    blinkState = true;
+    lastDisplayBlink = now;
+  }
+  
   switch(currentState){
     case 0:
       write_time();
@@ -130,4 +143,3 @@ void write_display(unsigned int now){
       break;
   }
 }
-
