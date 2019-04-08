@@ -13,8 +13,13 @@ Chaves 1 e 3 pressionadas simultaneamente levam o relógio ao primeiro estado da
 Se 10 segundos se passarem sem nada ser pressionado nos modos de acerto de horário, o relógio volta ao primeiro
 Chave 3 faz o relógio passar para o próximo estado da lista, voltando ao estado inicial se estiver no último
 Chave 2 avança hora/minuto quando relógio está em um dos estados de acerto de horário da lista
+
+Funções extra:
 Chave 1 volta hora/minuto quando relógio está em um dos estados de acerto de horário da lista
 Segurar chaves 1 ou 2 durante o ajuste de horário avança/volta o horário continuamente
+O apito do alarme não é um simples apito contínuo
+
+
 
 Arquivos:
 pindefs -> Definição dos pinos
