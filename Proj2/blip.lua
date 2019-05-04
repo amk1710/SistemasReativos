@@ -7,7 +7,7 @@ function blipModule.newblip (vel, direction, player)
   local inactiveUntil = 0
   local playerPosition = player.getPosition()
   
-  local active = true
+  local hit = true
   
   local wait = function (segundos) 
     inactiveUntil = love.timer.getTime() + segundos
@@ -16,14 +16,11 @@ function blipModule.newblip (vel, direction, player)
   
   local function up()
     while true do
-      if active then      
+      if hit then      
         x = x+10*movementDir[1]
         y = y+10*movementDir[2]
-        
-        print(math.abs(x - playerPosition.x))
-        print(math.abs(y - playerPosition.y))
         if math.abs(x - playerPosition.x) < 20 and math.abs(y - playerPosition.y) < 20 then
-          active = false
+          hit = false
         end
       end
       wait(vel)
@@ -33,12 +30,12 @@ function blipModule.newblip (vel, direction, player)
   return {
     update = coroutine.wrap(up),
     draw = function ()
-      if active then
+      if hit then
         love.graphics.rectangle("line", x, y, 10, 10)
       end
     end,
     
-    getInactiveUntil = function () return inactiveUntil end
+    getInactiveUntil = function (timeStart) return inactiveUntil - timeStart end
     
   }
 end

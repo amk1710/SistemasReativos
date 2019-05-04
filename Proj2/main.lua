@@ -1,19 +1,25 @@
 local playerModule = require("player")
 local blipModule = require("blip")
-local midi = require "luamidi"
+--local midi = require("luamidi")
+--local json = require("json")
+local songPlayer = require("songPlayer")
 
-midi.noteOn(0, 60, {50, 100, 50}, 1)
-love.timer.sleep(1)
-midi.noteOn(0, 60, {50, 100, 50}, 1)
+
 local mov_speed = 2
 local width, height = love.graphics.getDimensions( )
 local directions = {
-    right={x = 0, y = height/2, dir = {1, 0}},
-    left={x = width-5, y = height/2, dir = {-1, 0}},
-    down={x = width/2, y = 0, dir = {0, 1}},
-    up={x = width/2, y = height-5, dir = {0, -1}},
-  }
+  right={x = 0, y = height/2, dir = {1, 0}},
+  left={x = width-5, y = height/2, dir = {-1, 0}},
+  down={x = width/2, y = 0, dir = {0, 1}},
+  up={x = width/2, y = height-5, dir = {0, -1}},
+}
+local directionsMap = {"right", "left", "down", "up"}
 
+local timeStart = love.timer.getTime()
+local lastTime = 0
+local music = love.audio.newSource("SpearOfJustice.mp3", "static")
+local projectiles = {}
+local currentProjectile = 1
 
 function love.keypressed(key)
   if key == 'a' then
@@ -30,17 +36,16 @@ end
 
 function love.load()
   player =  playerModule.newplayer(width, height)
+  projectiles = songPlayer.getProjectiles("SpearOfJustice.json")
+  print(projectiles)
   listabls = {}
 --  for i = 1, 5 do
 --    listabls[i] = newblip(i, )
 --  end
   
-  i = 0
   for key, value in pairs(directions) do
-    listabls[i] = blipModule.newblip(0.1, value, player)
-    i = i + 1
+    listabls[#listabls+1] = blipModule.newblip(0.1, value, player)
   end
-  listabls[i] = blipModule.newblip(0.1, directions.right, player)
 end
 
 function love.draw()
@@ -51,13 +56,28 @@ function love.draw()
 end
 
 function love.update(dt)
-  now = love.timer.getTime()
+  now = love.timer.getTime() - timeStart
+  
+  if now > 1 and lastTime < 1 then
+    love.audio.play(music)
+  end
   player.update(dt)
   for i = 1,#listabls do
-    if now > listabls[i].getInactiveUntil() then
+    if now > listabls[i].getInactiveUntil(timeStart) then
       listabls[i].update()
     end
   end
+  
+  if currentProjectile < #projectiles and now > projectiles[currentProjectile] and projectiles[currentProjectile] > lastTime then
+    while projectiles[currentProjectile] < now do
+      rand = math.random(4)
+      listabls[#listabls+1] = blipModule.newblip(0.1, directions[directionsMap[rand]], player)
+      currentProjectile = currentProjectile + 1
+      if currentProjectile > #projectiles then break end
+    end
+  end
+  
+  lastTime = now
 end
 
 function love.keypressed(key)
