@@ -26,12 +26,16 @@ function songPlayerModule.getProjectiles(filepath)
 --        local noteObj = song.tracks[track].notes[note]
 --        midi.noteOn(0, noteObj.midi, {noteObj.velocity}, 1)
 --        love.timer.sleep(noteObj.duration)
-        projectiles[#projectiles+1]=song.tracks[track].notes[note].time+1
+        projectiles[#projectiles+1] = {
+          time = song.tracks[track].notes[note].time+1,
+          note = song.tracks[track].notes[note]
+        }
+
       end
     end
   end
 --  print(json.encode(projectiles))
-  table.sort(projectiles)
+  --table.sort(projectiles)
   return projectiles
 end
 

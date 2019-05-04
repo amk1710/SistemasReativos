@@ -56,7 +56,7 @@ function love.update(dt)
   --print(now)
   
   if not (musicStart == 0) and now > musicStart + 1 and not music:isPlaying() then
-    love.audio.play(music)
+--    love.audio.play(music)
   end
   player.update(dt)
   for i = 1,#listabls do
@@ -65,8 +65,8 @@ function love.update(dt)
     end
   end
   
-  if currentProjectile < #projectiles and ((now > projectiles[currentProjectile] and projectiles[currentProjectile] > lastTime)) then
-    while projectiles[currentProjectile] < now do
+  if currentProjectile < #projectiles and ((now > projectiles[currentProjectile].time and projectiles[currentProjectile].time > lastTime)) then
+    while projectiles[currentProjectile].time < now do
       rand = math.random(4)
       local speed = 10
       
@@ -77,7 +77,7 @@ function love.update(dt)
       end
       --print(speed)
       if musicStart == 0 then musicStart = now end
-      listabls[#listabls+1] = blipModule.newblip(speed, directions[directionsMap[rand]], player)
+      listabls[#listabls+1] = blipModule.newblip(speed, directions[directionsMap[rand]], player, projectiles[currentProjectile].note)
       currentProjectile = currentProjectile + 1
       if currentProjectile > #projectiles then break end
     end

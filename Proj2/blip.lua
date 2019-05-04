@@ -1,6 +1,8 @@
 local blipModule = {}
 
-function blipModule.newblip (vel, direction, player)
+local midi = require("luamidi")
+
+function blipModule.newblip (vel, direction, player, note)
   local x, y = direction.x, direction.y
   local movementDir = direction.dir
   
@@ -20,6 +22,7 @@ function blipModule.newblip (vel, direction, player)
         x = x+10*movementDir[1]
         y = y+10*movementDir[2]
         if math.abs(x - playerPosition.x) < 20 and math.abs(y - playerPosition.y) < 20 then
+          midi.noteOn(0, note.midi, 50, 1)
           hit = false
         end
       end
