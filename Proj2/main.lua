@@ -4,7 +4,7 @@ local blipModule = require("blip")
 --local json = require("json")
 local songPlayer = require("songPlayer")
 
-local songName = "SpearOfJustice"
+local songName = "Megalovania"
 
 local mov_speed = 2
 local width, height = love.graphics.getDimensions( )
@@ -21,6 +21,7 @@ local lastTime = 0
 local music = love.audio.newSource(songName .. ".mp3", "static")
 local projectiles = {}
 local currentProjectile = 1
+local musicStart = 0
 
 function love.keypressed(key)
   if key == 'a' then
@@ -38,7 +39,7 @@ end
 function love.load()
   player =  playerModule.newplayer(width, height)
   projectiles = songPlayer.getProjectiles(songName .. ".json")
-  print(projectiles)
+--  print(projectiles)
   listabls = {}
   timeStart = love.timer.getTime()
 end
@@ -52,8 +53,9 @@ end
 
 function love.update(dt)
   now = love.timer.getTime() - timeStart
+  --print(now)
   
-  if now > 1 and lastTime < 1 then
+  if not (musicStart == 0) and now > musicStart + 1 and not music:isPlaying() then
     love.audio.play(music)
   end
   player.update(dt)
@@ -63,15 +65,18 @@ function love.update(dt)
     end
   end
   
-  if currentProjectile < #projectiles and now > projectiles[currentProjectile] and projectiles[currentProjectile] > lastTime then
+  if currentProjectile < #projectiles and ((now > projectiles[currentProjectile] and projectiles[currentProjectile] > lastTime)) then
     while projectiles[currentProjectile] < now do
       rand = math.random(4)
-      local speed = 1/(2*(projectiles[currentProjectile]-now))
+      local speed = 10
+      
       if rand == 1 or rand == 2 then
-        speed = width*speed
+        speed = speed/(width/2 + 15)
       else
-        speed = height*speed
+        speed = speed/(height/2 + 15)
       end
+      --print(speed)
+      if musicStart == 0 then musicStart = now end
       listabls[#listabls+1] = blipModule.newblip(speed, directions[directionsMap[rand]], player)
       currentProjectile = currentProjectile + 1
       if currentProjectile > #projectiles then break end

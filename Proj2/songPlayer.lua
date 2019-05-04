@@ -30,7 +30,7 @@ function songPlayerModule.getProjectiles(filepath)
       end
     end
   end
-  print(json.encode(projectiles))
+--  print(json.encode(projectiles))
   table.sort(projectiles)
   return projectiles
 end
