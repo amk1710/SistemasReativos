@@ -1,6 +1,10 @@
 local playerModule = require("player")
 local blipModule = require("blip")
+local midi = require "luamidi"
 
+midi.noteOn(0, 60, {50, 100, 50}, 1)
+love.timer.sleep(1)
+midi.noteOn(0, 60, {50, 100, 50}, 1)
 local mov_speed = 2
 local width, height = love.graphics.getDimensions( )
 local directions = {
