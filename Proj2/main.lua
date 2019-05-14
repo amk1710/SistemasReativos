@@ -42,6 +42,8 @@ function love.load()
 --  print(projectiles)
   listabls = {}
   timeStart = love.timer.getTime()
+  
+  love.graphics.setBackgroundColor( 0.5, 0, 0, 1)
 end
 
 function love.draw()
