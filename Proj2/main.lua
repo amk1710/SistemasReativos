@@ -41,6 +41,8 @@ function love.load()
   projectiles = songPlayer.getProjectiles(songName .. ".json")
   listabls = {}
   timeStart = love.timer.getTime()
+  
+  love.graphics.setBackgroundColor( 0.5, 0, 0, 1)
 end
 
 function love.draw()
@@ -59,14 +61,14 @@ function love.update(dt)
   player.update(dt)
   for i = 1,#listabls do
     if now > listabls[i].getInactiveUntil(timeStart) then
-      listabls[i].update()
+      listabls[i].update(dt)
     end
   end
   
   if currentProjectile < #projectiles and ((now > projectiles[currentProjectile].time and projectiles[currentProjectile].time > lastTime)) then
     while projectiles[currentProjectile].time < now do
       rand = math.random(4)
-      local speed = 10
+      local speed = 15
       
       if rand == 1 or rand == 2 then
         speed = speed/(width/2 + 15)
