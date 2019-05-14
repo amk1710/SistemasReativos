@@ -15,7 +15,9 @@ function playerModule.newplayer (width, height)
   --    end
     end,
     draw = function ()
+      love.graphics.setColor(255,0,0);
       love.graphics.rectangle("line", x, y, 30, 30)
+      love.graphics.setColor(255,255,255);
     end,
     keypressed = function (key)
       if love.keyboard.isDown("right") then 

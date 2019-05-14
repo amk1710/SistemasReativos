@@ -1,18 +1,18 @@
 local playerModule = require("player")
 local blipModule = require("blip")
---local midi = require("luamidi")
---local json = require("json")
 local songPlayer = require("songPlayer")
 
 local songName = "Megalovania"
 
 local mov_speed = 2
+love.window.setMode(800, 800)
 local width, height = love.graphics.getDimensions( )
+
 local directions = {
   right={x = 0, y = height/2, dir = {1, 0}},
-  left={x = width-5, y = height/2, dir = {-1, 0}},
+  left={x = width, y = height/2, dir = {-1, 0}},
   down={x = width/2, y = 0, dir = {0, 1}},
-  up={x = width/2, y = height-5, dir = {0, -1}},
+  up={x = width/2, y = height, dir = {0, -1}},
 }
 local directionsMap = {"right", "left", "down", "up"}
 
@@ -39,7 +39,6 @@ end
 function love.load()
   player =  playerModule.newplayer(width, height)
   projectiles = songPlayer.getProjectiles(songName .. ".json")
---  print(projectiles)
   listabls = {}
   timeStart = love.timer.getTime()
 end
@@ -53,11 +52,10 @@ end
 
 function love.update(dt)
   now = love.timer.getTime() - timeStart
-  --print(now)
   
-  if not (musicStart == 0) and now > musicStart + 1 and not music:isPlaying() then
+--  if not (musicStart == 0) and now > musicStart + 1 and not music:isPlaying() then
 --    love.audio.play(music)
-  end
+--  end
   player.update(dt)
   for i = 1,#listabls do
     if now > listabls[i].getInactiveUntil(timeStart) then
@@ -75,7 +73,7 @@ function love.update(dt)
       else
         speed = speed/(height/2 + 15)
       end
-      --print(speed)
+      
       if musicStart == 0 then musicStart = now end
       listabls[#listabls+1] = blipModule.newblip(speed, directions[directionsMap[rand]], player, projectiles[currentProjectile].note)
       currentProjectile = currentProjectile + 1
