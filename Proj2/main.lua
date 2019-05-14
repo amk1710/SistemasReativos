@@ -14,7 +14,7 @@ local directions = {
   down={x = width/2, y = 0, dir = {0, 1}},
   up={x = width/2, y = height, dir = {0, -1}},
 }
-local directionsMap = {"right", "left", "down", "up"}
+local directionsMap = {"right", "down", "left", "up"}
 
 local timeStart
 local lastTime = 0
@@ -67,7 +67,9 @@ function love.update(dt)
   
   if currentProjectile < #projectiles and ((now > projectiles[currentProjectile].time and projectiles[currentProjectile].time > lastTime)) then
     while projectiles[currentProjectile].time < now do
-      rand = math.random(4)
+      --rand = math.random(4)
+      rand = (projectiles[currentProjectile].note.midi % 4) + 1
+      
       local speed = 15
       
       if rand == 1 or rand == 2 then
