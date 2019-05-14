@@ -41,7 +41,7 @@ function blipModule.newblip (vel, direction, player, note)
       if hit then      
         x = x+10*movementDir[1]
         y = y+10*movementDir[2]
-        if math.abs(x - playerPosition.x) < 20 and math.abs(y - playerPosition.y) < 20 then
+        if math.abs(x - (playerPosition.x+10)) < 20 and math.abs(y - (playerPosition.y+10)) < 20 then
           midi.noteOn(0, note.midi, 50, 1)
           hit = false
         end
