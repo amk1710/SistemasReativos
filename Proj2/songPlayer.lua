@@ -19,19 +19,17 @@ function songPlayerModule.getProjectiles(filepath)
   local song = json.decode(file)  
   local projectiles = {}
   for track = 1,#song.tracks do
---    print(song.tracks[track].instrumentFamily)
     if song.tracks[track].instrumentFamily == "piano" then
       for note = 1, #song.tracks[track].notes do
-        
---        local noteObj = song.tracks[track].notes[note]
---        midi.noteOn(0, noteObj.midi, {noteObj.velocity}, 1)
---        love.timer.sleep(noteObj.duration)
-        projectiles[#projectiles+1]=song.tracks[track].notes[note].time+1
+        if(#projectiles == 0 or song.tracks[track].notes[note].time+1 ~= projectiles[#projectiles].time) then
+          projectiles[#projectiles+1] = {
+            time = song.tracks[track].notes[note].time+1,
+            note = song.tracks[track].notes[note]
+          }
+        end
       end
     end
   end
---  print(json.encode(projectiles))
-  table.sort(projectiles)
   return projectiles
 end
 
