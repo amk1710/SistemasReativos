@@ -5,6 +5,9 @@ local midi = require("luamidi")
 -- referência de animação: https://love2d.org/wiki/Tutorial:Animation
 function newAnimation(image, width, height, duration)
     local animation = {}
+    animation.width = width
+    animation.height = height
+    
     animation.spriteSheet = image;
     
     animation.quads = {};
@@ -55,7 +58,7 @@ function blipModule.newblip (vel, direction, player, note)
         end
         --]]
         
-        animation.currentTime = love.timer.getTime() % #animation.quads
+        --animation.currentTime = love.timer.getTime() % #animation.quads
         
         
       end
@@ -72,8 +75,8 @@ function blipModule.newblip (vel, direction, player, note)
         --o índice do frame de animação:
         --local spriteNum = math.floor(animation.currentTime / animation.duration * #animation.quads) + 1    
         local spriteNum = (math.floor(love.timer.getTime() / animation.duration) % #animation.quads) + 1
-        print("spriteNum", spriteNum)
-        love.graphics.draw(animation.spriteSheet, animation.quads[spriteNum], x, y)
+        
+        love.graphics.draw(animation.spriteSheet, animation.quads[spriteNum], x, y, 0, 1, 1, animation.width / 2, animation.height/2)
       end
     end,
     
