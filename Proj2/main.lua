@@ -4,6 +4,8 @@ local songPlayer = require("songPlayer")
 
 local songName = "Megalovania"
 
+local hitTolerance = 1.2
+
 local mov_speed = 2
 love.window.setMode(800, 800)
 local width, height = love.graphics.getDimensions( )
@@ -21,6 +23,7 @@ local lastTime = 0
 local music = love.audio.newSource(songName .. ".mp3", "static")
 local projectiles = {}
 local currentProjectile = 1
+local nextProjectile = 1
 local musicStart = 0
 
 function love.keypressed(key)
@@ -70,13 +73,7 @@ function love.update(dt)
       --rand = math.random(4)
       rand = (projectiles[currentProjectile].note.midi % 4) + 1
       
-      local speed = 15
-      
-      if rand == 1 or rand == 2 then
-        speed = speed/(width/2 + 15)
-      else
-        speed = speed/(height/2 + 15)
-      end
+      local speed = 2/width
       
       if musicStart == 0 then musicStart = now end
       listabls[#listabls+1] = blipModule.newblip(speed, directions[directionsMap[rand]], player, projectiles[currentProjectile].note)
@@ -89,6 +86,32 @@ function love.update(dt)
 end
 
 function love.keypressed(key)
-  player.keypressed(key)
+  local pressTime = love.timer.getTime() - timeStart - musicStart
+  
+  while(pressTime - projectiles[nextProjectile].time > 0) do
+    nextProjectile = nextProjectile + 1
+  end
+  
+  local projectileDir
+  if (nextProjectile <= #listabls) then
+    projectileDir = listabls[nextProjectile].getMovementDir()
+  else
+    return 
+  end
+  
+  print(nextProjectile)
+  if (math.abs(pressTime - projectiles[nextProjectile].time) < hitTolerance) then
+    if (key == "right" and projectileDir[1] == -1) or
+       (key == "up" and projectileDir[2] == 1) or
+       (key == "down" and projectileDir[2] == -1) or
+       (key == "left" and projectileDir[1] == 1) then
+      print("Hit!")
+      listabls[nextProjectile].setHit(false)
+      listabls[nextProjectile].play()
+      nextProjectile = nextProjectile + 1
+    else
+      print("Error!")
+    end
+  end
 end
   

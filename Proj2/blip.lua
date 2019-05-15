@@ -48,7 +48,7 @@ function blipModule.newblip (vel, direction, player, note)
         x = x+10*movementDir[1]
         y = y+10*movementDir[2]
         if math.abs(x - (playerPosition.x+10)) < 20 and math.abs(y - (playerPosition.y+10)) < 20 then
-          midi.noteOn(0, note.midi, 50, 1)
+          --midi.noteOn(0, note.midi, 50, 1)
           hit = false
         end
         
@@ -80,7 +80,10 @@ function blipModule.newblip (vel, direction, player, note)
       end
     end,
     
-    getInactiveUntil = function (timeStart) return inactiveUntil - timeStart end
+    getInactiveUntil = function (timeStart) return inactiveUntil - timeStart end,
+    getMovementDir = function () return movementDir end,
+    setHit = function (hitState) hit = hitState end,
+    play = function () midi.noteOn(0, note.midi, 50, 1) end
     
   }
 end

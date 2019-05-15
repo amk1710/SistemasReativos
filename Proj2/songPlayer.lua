@@ -26,6 +26,7 @@ function songPlayerModule.getProjectiles(filepath)
             time = song.tracks[track].notes[note].time+1,
             note = song.tracks[track].notes[note]
           }
+          
         end
       end
     end
