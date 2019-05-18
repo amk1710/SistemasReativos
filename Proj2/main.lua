@@ -4,7 +4,7 @@ local songPlayer = require("songPlayer")
 
 local songName = "Megalovania"
 
-local hitTolerance = 1.2
+local hitTolerance = 0.5
 
 local mov_speed = 2
 love.window.setMode(800, 800)
@@ -20,24 +20,11 @@ local directionsMap = {"right", "down", "left", "up"}
 
 local timeStart
 local lastTime = 0
-local music = love.audio.newSource(songName .. ".mp3", "static")
+--local music = love.audio.newSource(songName .. ".mp3", "static")
 local projectiles = {}
 local currentProjectile = 1
 local nextProjectile = 1
 local musicStart = 0
-
-function love.keypressed(key)
-  if key == 'a' then
-    pos = player.try()
-    for i in ipairs(listabls) do
-      local hit = listabls[i].affected(pos)
-      if hit then
-        table.remove(listabls, i) -- esse blip "morre" 
-        return -- assumo que apenas um blip morre
-      end
-    end
-  end
-end
 
 function love.load()
   player =  playerModule.newplayer(width, height)
@@ -45,7 +32,7 @@ function love.load()
   listabls = {}
   timeStart = love.timer.getTime()
   
-  love.graphics.setBackgroundColor( 0.5, 0, 0, 1)
+  love.graphics.setBackgroundColor( 1, 0.5, 0.8, 1)
 end
 
 function love.draw()
@@ -62,8 +49,8 @@ function love.update(dt)
 --    love.audio.play(music)
 --  end
   player.update(dt)
-  for i = 1,#listabls do
-    if now > listabls[i].getInactiveUntil(timeStart) then
+  for i = nextProjectile - 1,#listabls do
+    if i > 0 and now > listabls[i].getInactiveUntil(timeStart) then
       listabls[i].update(dt)
     end
   end
@@ -99,8 +86,9 @@ function love.keypressed(key)
     return 
   end
   
-  print(nextProjectile)
   if (math.abs(pressTime - projectiles[nextProjectile].time) < hitTolerance) then
+    print(key)
+    print(projectileDir[1], projectileDir[2])
     if (key == "right" and projectileDir[1] == -1) or
        (key == "up" and projectileDir[2] == 1) or
        (key == "down" and projectileDir[2] == -1) or
@@ -111,7 +99,9 @@ function love.keypressed(key)
       nextProjectile = nextProjectile + 1
     else
       print("Error!")
+      nextProjectile = nextProjectile + 1
     end
+print()
   end
 end
   
