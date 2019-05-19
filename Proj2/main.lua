@@ -46,6 +46,8 @@ function love.draw()
   
   paleta.draw()
   
+  love.graphics.print(nextProjectile, 200, 200)
+  
 end
 
 function love.update(dt)
@@ -109,7 +111,7 @@ function love.keypressed(key)
       nextProjectile = nextProjectile + 1
     else
       print("Error!")
-      nextProjectile = nextProjectile + 1
+      --nextProjectile = nextProjectile + 1
      
       
     end
