@@ -1,20 +1,22 @@
 local led1 = 3
-local led2 = 6
 local sw1 = 1
 local sw2 = 2
 
+local led1State = gpio.LOW;
+
+local channel = "1510962"
 local m
 
 wificonf = {
     -- verificar ssid e senha
-    ssid = "Rafa",
-    pwd = "rafagato",
+    ssid = "ssid",
+    pwd = "pwd",
     got_ip_cb = function (con)
         print ("meu IP: ", con.IP)
 
         m = mqtt.Client("pedro", 120)
         -- conecta com servidor mqtt na máquina 'ipbroker' e porta 1883:
-        m:connect("test.mosquitto.org", 1883, 0,
+        m:connect("85.119.83.194", 1883, 0,
             -- callback em caso de sucesso
             function(client) 
                 print("connected")
@@ -23,30 +25,35 @@ wificonf = {
                     function(client, topic, data)
                         print(topic .. ":" )
                         if data ~= nil then print(data) end
+                        if(led1State == gpio.LOW) then
+                            gpio.write(led1, gpio.HIGH)
+                            led1State = gpio.HIGH
+                        else
+                            gpio.write(led1, gpio.LOW)
+                            led1State = gpio.LOW
+                        end
                     end
                 )
                 
-                m:subscribe("alos", 0,
+                m:subscribe(channel, 0,
                     -- fç chamada qdo inscrição ok:
                     function (client)
                         print("subscribe success")
                         gpio.mode(led1, gpio.OUTPUT)
-                        gpio.mode(led2, gpio.OUTPUT)
                         
                         gpio.write(led1, gpio.LOW)
-                        gpio.write(led2, gpio.LOW)
                         
                         gpio.mode(sw1,gpio.INT,gpio.PULLUP)
                         gpio.mode(sw2,gpio.INT,gpio.PULLUP)
                         
                         function pressedButton1()
                             print("Apertei botao 1")
-                            m:publish("apertou-tecla", "apertei1", 0, 1)
+                            m:publish(channel, "apertei1", 0, 1)
                         end
                         
                         function pressedButton2()
                             print("Apertei botao 2")
-                            m:publish("apertou-tecla", "apertei2", 0, 1)
+                            m:publish(channel, "apertei2", 0, 1)
                         end
                         
                         gpio.trig(sw1, "down", pressedButton1)
