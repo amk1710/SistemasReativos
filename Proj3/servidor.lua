@@ -1,5 +1,6 @@
 local morse = require("morse")
 local servidor = {}
+local mqtt_channel = "broadcast"
 
 servidor.open = function()
 
@@ -38,31 +39,14 @@ servidor.open = function()
       local returnString = "Mensagem não recebida"
       if(text ~= nil and string.len(text) > 0) then
         returnString = morse.encode(unescape(text))
+        m:publish(mqtt_channel, returnString, 0, 1)
       end
       
-    
-    -- local buf = [[
-    -- <html>
-    -- <body>
-    -- <h1><u>PUC Rio</u></h1>
-    -- <h2><i>ESP8266 Web Server</i></h2>
-    --         <p>Temperatura: $TEMP oC <a href="?pin=LERTEMP"><button><b>REFRESH</b></button></a>
-    --         <p>PISCA LED 1: $STLED1  <a href="?pin=LIGA1"><button><b>ON</b></button></a>
-    --                             <a href="?pin=DESLIGA1"><button><b>OFF</b></button></a></p>
-    --         <p>PISCA LED 2: $STLED2  <a href="?pin=LIGA2"><button><b>ON</b></button></a>
-    --                             <a href="?pin=DESLIGA2"><button><b>OFF</b></button></a></p>
-    -- </body>
-    -- </html>
-    -- ]]
-    
-    
-      --buf = string.gsub(buf, "$(%w+)", vals)
       sck:send(returnString, 
                function()  -- callback: fecha o socket qdo acabar de enviar resposta
                  print("respondeu") 
                  sck:close() 
                end)
-    
     end
     
     if srv then
@@ -70,6 +54,36 @@ servidor.open = function()
           print("CONN")
           conn:on("receive", receiver)
         end)
+
+        m = mqtt.Client("pedro", 120)
+        -- conecta com servidor mqtt na máquina 'ipbroker' e porta 1883:
+        m:connect("85.119.83.194", 1883, 0,
+            -- callback em caso de sucesso
+            function(client) 
+                print("mqtt connected")
+                
+                m:on("message",
+                    function(client, topic, data)
+                        print(topic .. ": " .. data )
+                    end
+                )
+                
+                m:subscribe(mqtt_channel, 0,
+                    -- fç chamada qdo inscrição ok:
+                    function (client)
+                        print("subscribe success")
+                    end,
+                    --fç chamada em caso de falha:
+                    function(client, reason)
+                        print("subscription failed reason: "..reason)
+                    end
+                )
+            end,
+            -- callback em caso de falha
+            function(client, reason)
+                print("connection failed reason: "..reason)
+            end
+        )
     end
     
     port, addr = srv:getaddr()
