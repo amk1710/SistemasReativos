@@ -66,25 +66,32 @@ servidor.open = function()
                     function(client, topic, data)
                         --print(topic .. ": " .. data )
 
-						--inicialização:
+						
 						local led1 = 3
 						gpio.mode(led1, gpio.OUTPUT)
-						pause_time = 0.2 --tempo de pausa em segundos
+						pause_time = 0.2*1000000 --tempo de pausa em segundos
 
-						for _, symbol in ipairs(data) do
+                        print("Piscando")
+                        for i=1, #data do
+                            symbol = data:sub(i,i)
+                            print(symbol)
 							if symbol == "." then
 								--acende por uma unidade de tempo
+                                print("Acende")
 								gpio.write(led1, gpio.HIGH)
 								tmr.delay(1*pause_time)
+                                print("Apaga")
 								gpio.write(led1, gpio.LOW)
 
-							elseif symbol == "-"
+							elseif symbol == "-" then
 								--acende por 3 unidade de tempo
+                                print("Acende")
 								gpio.write(led1, gpio.HIGH)
 								tmr.delay(3*pause_time)
+                                print("Apaga")
 								gpio.write(led1, gpio.LOW)
 							else
-								--se não for . ou -, pausa por 1 uma unidade de tempo
+								
 								tmr.delay(1*pause_time)
 
 							end
