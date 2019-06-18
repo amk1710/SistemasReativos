@@ -5,6 +5,7 @@ unsigned long time1 = 0;
 unsigned long time2 = 0;
 unsigned long timeSerial = 0;
 unsigned long timeDetected = 0;
+int lightTolerance = 250;
 
 void setup() {
   // put your setup code here, to run once:
@@ -19,10 +20,11 @@ void loop() {
   int lightValue1 = analogRead(light1);
   int lightValue2 = analogRead(light2);
 
-  if(lightValue1 < 300 && millis() - timeDetected > 1000){
+
+  if(lightValue1 < lightTolerance && millis() - timeDetected > 1000){
     time1 = millis();
   }
-  if(lightValue2 < 300 && millis() - timeDetected > 1000){
+  if(lightValue2 < lightTolerance && millis() - timeDetected > 1000){
     time2 = millis();
   }
 
