@@ -1,16 +1,24 @@
 local serialib = require('serialib')
+local serialReader = require('serialReader')
+
+local readInterval = 0.25
 
 function love.load()
-  serialib:openPort("/dev/tty.usbserial-14110", 'r')
+  serialib:openPort("/dev/cu.usbserial-14310", 'r')
+  
+  sr = serialReader.init(readInterval)
 end
 
 function love.update(dt)
-  serialib:read(20)
-  print(serialib:getMessage())
+  local now = love.timer.getTime()
+  
+  if now - sr.getInactiveUntil() > readInterval then
+    sr.update()
+  end
 end
 
 function love.draw()
--- love.graphics.print(serialib:getMessage());
+  sr.draw()
 end
 
 function love.keypressed(key)
