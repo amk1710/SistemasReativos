@@ -7,7 +7,7 @@ local bubble = 0
 
 --função auxiliar para centralizar os parametros de criação de uma bolha
 local function newBubble()
-  return bubbleMod.newBubble(20, width/2, height/2, 0, 0, 0.99, 0.5)
+  return bubbleMod.newBubble(20, width/2, height/2, 0, 0.2, 0.99, 0.5, true)
 end
 
 local thread -- Our thread object.

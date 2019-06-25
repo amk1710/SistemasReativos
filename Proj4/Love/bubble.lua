@@ -3,7 +3,19 @@
 
 local bubbleModule = {}
 
-bubbleModule.newBubble = function(radius, positionX, positionY, gravityX, gravityY, dragCoefficient, randomWalkCoefficient)
+local difficultyLevels = 
+{
+    {startingTime = 0, randomWalkCoefficient = 0},
+    {startingTime = 10, randomWalkCoefficient = 0.2},
+    {startingTime = 20, randomWalkCoefficient = 0.4},
+    {startingTime = 30, randomWalkCoefficient = 0.6},
+    {startingTime = 40, randomWalkCoefficient = 1.0},
+    {startingTime = 50, randomWalkCoefficient = 1.5},
+    {startingTime = 60, randomWalkCoefficient = 2.0}
+    
+}
+
+bubbleModule.newBubble = function(radius, positionX, positionY, gravityX, gravityY, dragCoefficient, randomWalkCoefficient, useDynamicDifficulty)
   
   local radius = radius or 5
   local posX = positionX or 0
@@ -11,6 +23,9 @@ bubbleModule.newBubble = function(radius, positionX, positionY, gravityX, gravit
   local gravX = gravityX or 0
   local gravY = gravityY or 0
   local dragCoefficient = dragCoefficient or 0.5
+  local randomWalkCoefficient = randomWalkCoefficient or 0.1
+  if useDynamicDifficulty then randomWalkCoefficient = difficultyLevels[1].randomWalkCoefficient end
+  local useDynamicDifficulty = useDynamicDifficulty or false
   
   local img = love.graphics.newImage("BubbleSimple.png")
   local img_w, img_h = img:getWidth(), img:getHeight()
@@ -25,14 +40,22 @@ bubbleModule.newBubble = function(radius, positionX, positionY, gravityX, gravit
   local speedX = 0
   local speedY = 0
   
-  local randomWalkCoefficient = randomWalkCoefficient or 1
-  
   local count = 1
-  frameInterval = 10
+  local frameInterval = 10
   
   local bubble = {}
   
+  local startingTime = love.timer.getTime()
+  local currentDifficulty = 1
+  
   bubble.update = function(dt)
+    
+    --atualiza coeficiente randomico, baseado no tempo que já passou
+    if useDynamicDifficulty and difficultyLevels[currentDifficulty + 1] ~= nil and love.timer.getTime() - startingTime > difficultyLevels[currentDifficulty + 1].startingTime then
+      currentDifficulty = currentDifficulty + 1
+      randomWalkCoefficient = difficultyLevels[currentDifficulty].randomWalkCoefficient
+    end
+    
     --atualiza velocidade instantânea
     speedX = speedX*dragCoefficient + dt*gravityX
     speedY = speedY*dragCoefficient + dt*gravityY
@@ -59,6 +82,11 @@ bubbleModule.newBubble = function(radius, positionX, positionY, gravityX, gravit
       --love.graphics.circle("fill", posX, posY)
       
       love.graphics.draw(img, posX, posY, 0, sx, sy, img_w/2, img_h/2)
+      
+      if useDynamicDifficulty then
+        local str = "Difficulty: " .. currentDifficulty --..", "..randomWalkCoefficient
+        love.graphics.print( str, 50, 50, 0, 1, 1)
+      end
       
   end
   
