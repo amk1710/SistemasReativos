@@ -1,6 +1,3 @@
---local serialib = require('serialib')
---local serialReader = require('serialReader')
-
 local width, height = 800, 600
 
 local bubbleMod = require("bubble")
@@ -13,9 +10,23 @@ local function newBubble()
   return bubbleMod.newBubble(20, width/2, height/2, 0, 0.2, 0.99, 0.05)
 end
 
+local thread -- Our thread object.
+
+local function readAll(file)
+    local f = assert(io.open(file, "rb"))
+    local content = f:read("*all")
+    f:close()
+    return content
+end
+
 function love.load()
-  --serialib:openPort("/dev/cu.usbserial-14310", 'r')
-  --sr = serialReader.init(readInterval)
+  
+  local threadCode = readAll("thread.lua")
+  
+  thread = love.thread.newThread( threadCode )
+  thread:start( 99, 1000 )
+  
+  
   love.window.setMode(width, height)
   
   
@@ -25,6 +36,10 @@ end
 
 function love.update(dt)
   local now = love.timer.getTime()
+  
+  -- Make sure no errors occured, in the thread
+  local error = thread:getError()
+  assert( not error, error )
   
   --[[
   if now - sr.getInactiveUntil() > readInterval then
@@ -43,6 +58,13 @@ end
 function love.draw()
   --sr.draw()
   bubble.draw()
+  
+  -- Get the info channel and pop the next message from it.
+  local info = love.thread.getChannel( 'info' ):pop()
+  if info then
+      love.graphics.print( info, 10, 10 )
+  end
+  
 end
 
 function love.keypressed(key)
