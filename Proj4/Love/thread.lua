@@ -19,15 +19,9 @@ serialib:openPort("/dev/ttyUSB1", 'r')
 local i = 0
 while true do
   
-  
-  ---[[
   serialib:read(1) -- ou 5, sei lá 
   if serialib:getMessage() ~= '' then
     love.thread.getChannel( 'info' ):push( serialib:getMessage() )
   end
-  --]]
-  --[[
-  love.thread.getChannel( 'info' ):push( i )
-  i = i + 1 or 0
-  --]]
+
 end

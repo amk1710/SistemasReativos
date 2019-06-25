@@ -9,9 +9,9 @@ local difficultyLevels =
     {startingTime = 10, randomWalkCoefficient = 0.2},
     {startingTime = 20, randomWalkCoefficient = 0.4},
     {startingTime = 30, randomWalkCoefficient = 0.6},
-    {startingTime = 40, randomWalkCoefficient = 1.0},
-    {startingTime = 50, randomWalkCoefficient = 1.5},
-    {startingTime = 60, randomWalkCoefficient = 2.0}
+    {startingTime = 40, randomWalkCoefficient = 0.8},
+    {startingTime = 50, randomWalkCoefficient = 1.0},
+    {startingTime = 60, randomWalkCoefficient = 1.5}
     
 }
 
@@ -40,8 +40,8 @@ bubbleModule.newBubble = function(radius, positionX, positionY, gravityX, gravit
   local speedX = 0
   local speedY = 0
   
-  local count = 1
-  local frameInterval = 10
+  local dtCount = 0
+  local dtInterval = 0.2
   
   local bubble = {}
   
@@ -50,6 +50,7 @@ bubbleModule.newBubble = function(radius, positionX, positionY, gravityX, gravit
   
   bubble.update = function(dt)
     
+    print(dt)
     --atualiza coeficiente randomico, baseado no tempo que já passou
     if useDynamicDifficulty and difficultyLevels[currentDifficulty + 1] ~= nil and love.timer.getTime() - startingTime > difficultyLevels[currentDifficulty + 1].startingTime then
       currentDifficulty = currentDifficulty + 1
@@ -60,14 +61,13 @@ bubbleModule.newBubble = function(radius, positionX, positionY, gravityX, gravit
     speedX = speedX*dragCoefficient + dt*gravityX
     speedY = speedY*dragCoefficient + dt*gravityY
     
-    if count % frameInterval == 0 then
-      count = 1
+    dtCount = dtCount + dt
+    if dtCount > dtInterval then
+      dtCount = 0
       local rx = math.random(-1, 1)
       local ry = math.random(-1, 1)
       speedX = speedX + rx*randomWalkCoefficient
-      speedY = speedY + ry*randomWalkCoefficient
-    else
-      count = count + 1
+      speedY = speedY + ry*randomWalkCoefficient      
     end
     
     --atualiza posicao
@@ -78,8 +78,6 @@ bubbleModule.newBubble = function(radius, positionX, positionY, gravityX, gravit
   end
   
   bubble.draw = function()
-      --love.graphics.setColor(1,1,1)
-      --love.graphics.circle("fill", posX, posY)
       
       love.graphics.draw(img, posX, posY, 0, sx, sy, img_w/2, img_h/2)
       
