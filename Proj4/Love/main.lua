@@ -47,6 +47,18 @@ function love.update(dt)
   end
   ]]--
   
+  -- Get the info channel and pop the next message from it.
+  local command = love.thread.getChannel( 'info' ):pop()
+  if command == 'r' then
+    bubble.addSpeed(3, 0)
+  elseif command == 'l' then
+    bubble.addSpeed(-3, 0)
+  elseif command == 'u' then
+    bubble.addSpeed(0, -3)
+  elseif command == 'd' then
+    bubble.addSpeed(0, 3)
+  end
+
   bubble.update(dt)
   
   if bubble.checkOutOfBounds(0, 0, width, height) then
@@ -58,16 +70,6 @@ end
 function love.draw()
   --sr.draw()
   bubble.draw()
-  
-  -- Get the info channel and pop the next message from it.
-  local command = love.thread.getChannel( 'info' ):pop()
-  if command == 'r' then
-      love.graphics.print( command, 10, 10 )
-	    bubble.addSpeed(3, 0)
-  elseif command == 'l' then
-      love.graphics.print( command, 10, 10 )
- 	    bubble.addSpeed(-3, 0)
-  end
   
 end
 
