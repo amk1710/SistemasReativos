@@ -1,4 +1,4 @@
-local width, height = 800, 600
+local width, height = 600, 600
 
 local bubbleMod = require("bubble")
 
@@ -7,7 +7,7 @@ local bubble = 0
 
 --função auxiliar para centralizar os parametros de criação de uma bolha
 local function newBubble()
-  return bubbleMod.newBubble(20, width/2, height/2, 0, 0.2, 0.99, 0.05)
+  return bubbleMod.newBubble(20, width/2, height/2, 0, 0, 0.99, 0.5)
 end
 
 local thread -- Our thread object.
@@ -21,9 +21,9 @@ end
 
 function love.load()
   
-  local threadCode = readAll("thread.lua")
+--  local threadCode = readAll("thread.lua")
   
-  thread = love.thread.newThread( threadCode )
+  thread = love.thread.newThread( "thread.lua" )
   thread:start( 99, 1000 )
   
   
@@ -60,9 +60,13 @@ function love.draw()
   bubble.draw()
   
   -- Get the info channel and pop the next message from it.
-  local info = love.thread.getChannel( 'info' ):pop()
-  if info then
-      love.graphics.print( info, 10, 10 )
+  local command = love.thread.getChannel( 'info' ):pop()
+  if command == 'r' then
+      love.graphics.print( command, 10, 10 )
+	    bubble.addSpeed(3, 0)
+  elseif command == 'l' then
+      love.graphics.print( command, 10, 10 )
+ 	    bubble.addSpeed(-3, 0)
   end
   
 end
