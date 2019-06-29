@@ -1,2 +1,5 @@
 Soap Bubble Image file acquired from https://opengameart.org/content/transparent-bubble on 22/06/2019. 
 Author is user aloknarula, and the asset was placed under public domain(CC0) 
+
+Bubble pop sound acquired from https://freesound.org/people/elmasmalo1/sounds/376968/ on 29/06/2019.
+Authos ir user elmasmalo1 and the asset was placed under creative commons license.

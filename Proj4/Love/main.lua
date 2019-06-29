@@ -5,6 +5,9 @@ local bubbleMod = require("bubble")
 local readInterval = 0.25
 local bubble = 0
 
+local songName = "M.O.O.N. - Crystals [Hotline Miami Soundtrack].mp3"
+local music = love.audio.newSource(songName, "static")
+
 --função auxiliar para centralizar os parametros de criação de uma bolha
 local function newBubble()
   return bubbleMod.newBubble(20, width/2, height/2, 0, 0.2, 0.99, 0.5, true)
@@ -22,7 +25,8 @@ end
 function love.load()
   
 --  local threadCode = readAll("thread.lua")
-  
+  music:setLooping(true)
+  love.audio.play(music)
   thread = love.thread.newThread( "thread.lua" )
   thread:start( 99, 1000 )
   
@@ -62,6 +66,7 @@ function love.update(dt)
   bubble.update(dt)
   
   if bubble.checkOutOfBounds(0, 0, width, height) then
+    bubble.pop()
     bubble = newBubble()
   end
   

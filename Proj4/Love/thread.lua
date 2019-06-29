@@ -14,7 +14,7 @@ end
 
 local serialib = require('serialib')
 
-serialib:openPort("/dev/ttyUSB0", 'r')
+serialib:openPort("COM4", 'r')
 
 local i = 0
 while true do

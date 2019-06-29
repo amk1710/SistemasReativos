@@ -15,6 +15,8 @@ local difficultyLevels =
     
 }
 
+local pop = love.audio.newSource("pop.wav", "static")
+
 bubbleModule.newBubble = function(radius, positionX, positionY, gravityX, gravityY, dragCoefficient, randomWalkCoefficient, useDynamicDifficulty)
   
   local radius = radius or 5
@@ -50,7 +52,6 @@ bubbleModule.newBubble = function(radius, positionX, positionY, gravityX, gravit
   
   bubble.update = function(dt)
     
-    print(dt)
     --atualiza coeficiente randomico, baseado no tempo que já passou
     if useDynamicDifficulty and difficultyLevels[currentDifficulty + 1] ~= nil and love.timer.getTime() - startingTime > difficultyLevels[currentDifficulty + 1].startingTime then
       currentDifficulty = currentDifficulty + 1
@@ -84,6 +85,7 @@ bubbleModule.newBubble = function(radius, positionX, positionY, gravityX, gravit
       if useDynamicDifficulty then
         local str = "Difficulty: " .. currentDifficulty --..", "..randomWalkCoefficient
         love.graphics.print( str, 50, 50, 0, 1, 1)
+        love.graphics.print( "Time: " .. string.format("%.2f", love.timer.getTime() - startingTime), 50, 70, 0, 1, 1)
       end
       
   end
@@ -94,7 +96,8 @@ bubbleModule.newBubble = function(radius, positionX, positionY, gravityX, gravit
   end
   
   bubble.pop = function()
-    print("pop")
+    love.audio.play(pop)
+    print("Time: " .. string.format("%.2f", love.timer.getTime() - startingTime))
   end
   
   bubble.checkOutOfBounds = function(minx, miny, maxx, maxy)
