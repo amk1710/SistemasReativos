@@ -99,5 +99,10 @@ function love.keypressed(key)
     bubble.addSpeed(-1, 0)
   end
   
+  if(key == 'r') then
+    bubble.pop()
+    bubble = newBubble()
+  end
+  
   
 end
