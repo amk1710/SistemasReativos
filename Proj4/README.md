@@ -13,6 +13,7 @@ The player uses movement control to move the bubble. The movement control is imp
 
 The circuit schematic is available in the following picture:
 
+![](circuit.png)
 
 ## Demo
 
